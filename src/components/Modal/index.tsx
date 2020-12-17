@@ -2,7 +2,7 @@ import InsetBox from 'components/AbsoluteBox/InsetBox';
 import CloseButton, { CloseControlProps } from 'components/CloseControl';
 import Flex, { ExtendedFlexProps, FlexProps } from 'components/Flex';
 import Typography, { ExtendedTypographyProps } from 'components/Typography';
-import React, { FC, useContext } from 'react';
+import React, { FC, useCallback, useContext, useEffect, useRef } from 'react';
 import useTheme from 'useTheme';
 import renderComponent, { Renderable } from 'utils/renderComponent';
 import useMerge from 'utils/useMerge';
@@ -40,6 +40,13 @@ const Modal: FC<ExtendedModalProps> = ({ children, onClose, ...p }) => {
     sizeVariant(modal, 'md', p),
     modal.default
   );
+
+  useEffect(() => {
+    document.onkeyup = (k) => k.key === 'Escape' ? onClose?.() ?? pop() : null;
+    return () => {
+      document.onkeyup = null;
+    };
+  });
 
   return (
     <InsetBox
